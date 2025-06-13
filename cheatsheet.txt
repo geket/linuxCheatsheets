@@ -1,0 +1,4 @@
+# Using sway but can't figure out why gparted won't open?
+# Wayland doesn't allow root but gparted requires it!
+# Here's a workaround.
+sudo -E gparted
