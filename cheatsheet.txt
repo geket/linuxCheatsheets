@@ -1,4 +1,94 @@
-# Using sway but can't figure out why gparted won't open?
+## Upgrading the system
+dnf update
+# Or, they do the same thing
+dnf upgrade
+
+## I had problems with nm-applet, so instead I use nmtui
+dnf install NetworkManager-tui
+nmtui
+
+## Lost your wifi after a system upgrade?
+# My issue was a known bug with atheros. 
+# If you are on Qualcomm Fastconnect 7800, try this
+sudo dnf downgrade atheros-firmware-20250311-1.fc42
+# Sometimes it can also be a problem with resolved.
+service systemd-resolved restart
+
+## If you are having problems with your Fn keybinds and are on a laptop
+# The proprietary nvidia drivers can usually be the culprit
+# Luckily one of Fedora's strengths is that it has strong support with the akmods-nvidia drivers
+# Here's how I got my keybinds to work
+
+##  Fedora + Nvidia + Secure Boot 
+# Only tested for Fedora 39 and latest NVIDIA drivers!
+# Secure Boot is turned ON in setup mode
+# Delete ALL older NVIDIA installations!
+# I recommend turning OFF 'quiet' boot option, for easier debugging, you can do it with following command:
+sudo grubby --update-kernel=ALL --remove-args='quiet'
+# Add rpmfusion repos
+# free
+sudo dnf install \   https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm 
+
+# nonfree:
+sudo dnf install \   https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm 
+
+# 2. Full update of system:
+sudo dnf upgrade --refresh 
+
+# 3. Reboot!
+# 4. Install signing modules:
+sudo dnf install kmodtool akmods mokutil openssl 
+
+# 5. Generate a key:
+sudo kmodgenca -a 
+
+# 6. Import your key, and set password to it, no need for complex passwords:
+sudo mokutil --import /etc/pki/akmods/certs/public_key.der 
+
+# 7. Reboot!
+# 8. MOK manager will ask you, if you want to proceed with boot, or import the key. Pick import the key, type in a password created in (7)
+# 9. Install NVIDIA drivers:
+sudo dnf install gcc kernel-headers kernel-devel akmod-nvidia xorg-x11-drv-nvidia xorg-x11-drv-nvidia-libs xorg-x11-drv-nvidia-libs.i686 
+
+# 10. Wait for modules to build! You can check build process via htop, or by typing:
+modinfo -F version nvidia
+
+# If it shows ERROR: Module nvidia not found - modules are still building, keep waiting.
+# 11. Recheck, that modules built:
+sudo akmods --force 
+
+# 12. Recheck boot image update:
+sudo dracut --force 
+
+# 13 Reboot! Done. 
+
+## You may have the issue where sway will not start after installing these particular drivers.
+# Here is how you fix this
+# Login through another DE or TTY 
+nano /usr/share/wayland-sessions/sway.desktop
+# add --unsupported-gpu after Exec=sway 
+# Write out, try to login to sway again
+
+## Another issue you may now have with sway is that your refresh rate is not matching your monitor
+# For me, I had to run this particular command
+output eDP-1 mode 2560x1600@165.019hz
+# To help find out your output name, install arandr, then run it
+dnf install arandr
+arandr
+# You can add this line to your sway config to make things easier.
+nano ~/.config/sway/config
+
+## Using sway but can't figure out why gparted won't open?
 # Wayland doesn't allow root but gparted requires it!
 # Here's a workaround.
 sudo -E gparted
+
+## Installing QEMU/KVM/Libvirt for VMs with little overhead.
+dnf install qemu qemu-kvm virt-manager libvirt bridge-utils
+# Enable and check the service
+sudo systemctl start libvirtd
+sudo systemctl enable libvirtd
+systemctl status libvirtd
+# Add your user to the required groups
+usermod -aG kvm username
+usermod -aG libvirt username
