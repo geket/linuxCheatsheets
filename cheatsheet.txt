@@ -1,3 +1,6 @@
+#------------------------------------------------------------
+#### System Maintenance
+### The Dandified YUM Package Manager
 ## Upgrading the system
 dnf update
 # Or, they do the same thing
@@ -6,14 +9,16 @@ dnf upgrade
 ## I had problems with nm-applet, so instead I use nmtui
 dnf install NetworkManager-tui
 nmtui
-
+#------------------------------------------------------------
+### Networking
 ## Lost your wifi after a system upgrade?
 # My issue was a known bug with atheros. 
 # If you are on Qualcomm Fastconnect 7800, try this
 sudo dnf downgrade atheros-firmware-20250311-1.fc42
 # Sometimes it can also be a problem with resolved.
 service systemd-resolved restart
-
+#------------------------------------------------------------
+### Nvidia
 ## If you are having problems with your Fn keybinds and are on a laptop
 # The proprietary nvidia drivers can usually be the culprit
 # Luckily one of Fedora's strengths is that it has strong support with the akmods-nvidia drivers
@@ -61,7 +66,8 @@ sudo akmods --force
 sudo dracut --force 
 
 # 13 Reboot! Done. 
-
+#------------------------------------------------------------
+### Sway
 ## You may have the issue where sway will not start after installing these particular drivers.
 # Here is how you fix this
 # Login through another DE or TTY 
@@ -82,7 +88,8 @@ nano ~/.config/sway/config
 # Wayland doesn't allow root but gparted requires it!
 # Here's a workaround.
 sudo -E gparted
-
+#------------------------------------------------------------
+### Virtualization
 ## Installing QEMU/KVM/Libvirt for VMs with little overhead.
 dnf install qemu qemu-kvm virt-manager libvirt bridge-utils
 # Enable and check the service
@@ -92,3 +99,15 @@ systemctl status libvirtd
 # Add your user to the required groups
 usermod -aG kvm username
 usermod -aG libvirt username
+#------------------------------------------------------------
+### Chat Clients
+## Signal Desktop
+# You may be apprehensive using the flatpak signal repo like I was
+# There is another alternative, you can use the OpenSUSE Fedora repo
+# Add the repo and install signal-desktop
+# Note: The repo seems to be trustworthy, as of my checking it was running the latest version of Signal
+sudo dnf config-manager addrepo --from-repofile=https://download.opensuse.org/repositories/network:im:signal/Fedora_42/network:im:signal.repo
+sudo dnf install signal-desktop
+
+# You can now run the Signal with the signal-desktop command
+signal-desktop
