@@ -15,6 +15,10 @@ nmtui
 # My issue was a known bug with atheros. 
 # If you are on Qualcomm Fastconnect 7800, try this
 sudo dnf downgrade atheros-firmware-20250311-1.fc42
+# If this was the issue, when you upgrade your system 
+# You will have to ignore the atheros-firmware package
+sudo dnf upgrade --exclude atheros-firmware
+
 # Sometimes it can also be a problem with resolved.
 service systemd-resolved restart
 #------------------------------------------------------------
