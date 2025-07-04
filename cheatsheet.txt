@@ -6,6 +6,9 @@ dnf update
 # Or, they do the same thing
 dnf upgrade
 
+# Signature verification failed.
+sudo dnf update --refresh
+
 ## I had problems with nm-applet, so instead I use nmtui
 dnf install NetworkManager-tui
 nmtui
