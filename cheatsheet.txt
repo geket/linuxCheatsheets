@@ -9,9 +9,6 @@ dnf upgrade
 # Signature verification failed.
 sudo dnf update --refresh
 
-## I had problems with nm-applet, so instead I use nmtui
-dnf install NetworkManager-tui
-nmtui
 #------------------------------------------------------------
 ### Networking
 ## Lost your wifi after a system upgrade?
@@ -24,6 +21,15 @@ sudo dnf upgrade --exclude atheros-firmware
 
 # Sometimes it can also be a problem with resolved.
 service systemd-resolved restart
+
+## I had problems with nm-applet, so instead I use nmtui
+dnf install NetworkManager-tui
+nmtui
+
+## Nethogs
+sudo dnf install nethogs
+sudo nethogs
+
 #------------------------------------------------------------
 ### Nvidia
 ## If you are having problems with your Fn keybinds and are on a laptop
@@ -73,6 +79,7 @@ sudo akmods --force
 sudo dracut --force 
 
 # 13 Reboot! Done. 
+
 #------------------------------------------------------------
 ### Sway
 ## You may have the issue where sway will not start after installing these particular drivers.
@@ -95,6 +102,7 @@ nano ~/.config/sway/config
 # Wayland doesn't allow root but gparted requires it!
 # Here's a workaround.
 sudo -E gparted
+
 #------------------------------------------------------------
 ### Virtualization
 ## Installing QEMU/KVM/Libvirt for VMs with little overhead.
@@ -106,6 +114,7 @@ systemctl status libvirtd
 # Add your user to the required groups
 usermod -aG kvm username
 usermod -aG libvirt username
+
 #------------------------------------------------------------
 ### Chat Clients
 ## Signal Desktop
@@ -118,3 +127,71 @@ sudo dnf install signal-desktop
 
 # You can now run the Signal with the signal-desktop command
 signal-desktop
+
+#------------------------------------------------------------
+### File managers
+## Czkawka GUI
+# Install the dependencies
+sudo dnf install gtk4-devel libheif-devel LibRaw-devel libavif-devel libdav1d-devel
+
+# Clone czkawka
+git clone https://github.com/qarmin/czkawka.git
+cd czkawka
+
+# Compile with cargo
+cargo run --release --bin czkawka_gui
+# Or with support for heif, libraw, libavif
+cargo run --release --bin czkawka_gui --features "heif,libraw,libavif"
+
+## Fsearch
+dnf copr enable cboxdoerfer/fsearch
+dnf install fsearch
+
+#------------------------------------------------------------
+### Drive utilities
+## smartmontools
+sudo dnf install smartmontools
+
+# Enable smartd service and make sure service starts
+systemctl enable smartd
+systemctl start smartd
+systemctl status smartd
+
+# Show drive SMART information
+sudo smartctl -i /dev/nvme0n1
+sudo smartctl -i /dev/sda
+
+# Show drive overall-health self-assessment test result
+sudo smartctl -x /dev/nvme1n1
+sudo smartctl -x /dev/sda
+
+## blivet-gui
+dnf install blivet-gui
+
+# blivet-gui has problems with Wayland like so many other GUI programs
+# Here is my workaround, as I could not get a polkit to work properly
+
+# Allow root to use your display temporarily
+xhost +SI:localuser:root
+
+# Run blivet-gui as root with environment preserved
+sudo -E blivet-gui
+
+# Revoke access afterward
+xhost -SI:localuser:root
+
+#------------------------------------------------------------
+### Programming languages & IDEs
+## Install Rust via rustup
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+# Verify that cargo is installed
+cargo -V
+
+# Update rustup
+rustup update
+
+# Install just for justfile integration
+cargo install just
+
+#------------------------------------------------------------
