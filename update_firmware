@@ -1,0 +1,14 @@
+#------------------------------------------------------------
+#### Updating firmware with fwupd
+### Are you tired of having to flash a bootable disk to a USB?
+### Did the manufacturor give you a .exe to update your BIOS but you are on Linux?
+### Here is the solution using fwupd's fwupdmgr command
+
+## Check for updates
+fwupdmgr refresh --force
+fwupdmgr get-updates
+
+## Update firmware, it may prompt you to restart
+fwupdmgr update
+
+#------------------------------------------------------------
