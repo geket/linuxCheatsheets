@@ -4,18 +4,24 @@
 ### You can remove most of these kernels, they take up a fairly large amount of space
 ## Check your current kernel name
 uname -r
-
+# You will get an output such as
 # 6.*.*-*-amd64
 # 5.*.*-*-amd64
 # 4.*.*-*-amd64
 
-## List Linux images installed
+## List and remove kernel images
+# List images on disk
 dpkg --list | grep linux-image
 
-## Remove all images that are not equal to uname -r output
+## Automatically remove all images that system deems unnecessary
+# This will also remove other packages, such as former dependencies
 sudo apt autoremove --purge
+
+## Making sure that the latest kernels work
 # Update GRUB to make sure that latest Kernels are found
 sudo update-grub
+# Reboot the system to see if the kernels work
+sudo reboot
 
 #------------------------------------------------------------
 #### Managing logs and temporary files
