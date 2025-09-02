@@ -1,0 +1,32 @@
+#------------------------------------------------------------
+#### Removing older, unused kernels
+### Linux stores several versions of the kernel in case something breaks
+### You can remove most of these kernels, they take up a fairly large amount of space
+## Check your current kernel name
+uname -r
+
+# 6.*.*-*-amd64
+# 5.*.*-*-amd64
+# 4.*.*-*-amd64
+
+## List Linux images installed
+dpkg --list | grep linux-image
+
+## Remove all images that are not equal to uname -r output
+sudo apt autoremove --purge
+# Update GRUB to make sure that latest Kernels are found
+sudo update-grub
+
+#------------------------------------------------------------
+#### Managing logs and temporary files
+## Check disk usage of the journal
+journalctl --disk-usage
+
+### If you are running out of space on your root partition this would be wise to clean
+### You can vacuum the size to a certain amount or delete anything older than a certain period
+## Reduce journal size
+sudo journalctl --vacuum-size=500M 
+## Delete logs older than seven days
+sudo journalctl --vacuum-time=7d
+
+#------------------------------------------------------------
