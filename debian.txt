@@ -1,0 +1,119 @@
+#------------------------------------------------------------
+#### System maintenance
+### apt
+sudo apt update && apt upgrade
+
+#------------------------------------------------------------
+#### Chat clients
+### Signal
+## NOTE: These instructions only work for 64-bit Debian-based
+# Linux distributions such as Ubuntu, Mint etc.
+
+# 1. Install our official public software signing key:
+wget -O- https://updates.signal.org/desktop/apt/keys.asc | gpg --dearmor > signal-desktop-keyring.gpg;
+cat signal-desktop-keyring.gpg | sudo tee /usr/share/keyrings/signal-desktop-keyring.gpg > /dev/null
+
+# 2. Add our repository to your list of repositories:
+wget -O signal-desktop.sources https://updates.signal.org/static/desktop/apt/signal-desktop.sources;
+cat signal-desktop.sources | sudo tee /etc/apt/sources.list.d/signal-desktop.sources > /dev/null
+
+# 3. Update your package database and install Signal:
+sudo apt update && sudo apt install signal-desktop
+
+###  Pidgin-OTR
+##   Install pidgin
+apt install pidgin-otr
+
+#------------------------------------------------------------
+#### Gaming
+###  Steam
+##   Append a "contrib" component to the main line in your /etc/apt/sources.list file (see Editing software sources). 
+#    For instance, on a Debian 12/Bookworm system, the line may look like this after your edit: 
+sudo nano /etc/apt/sources.list
+# deb http://deb.debian.org/debian/ trixie main contrib non-free-firmware
+
+#    For amd64 (64-bit) systems, enable Multi-Arch
+dpkg --add-architecture i386
+
+#    Update the list of available packages and install the steam-installer package
+sudo apt update && sudo apt install steam-installer
+
+#    For amd64 (64-bit) systems, additional libraries need to be installed for Vulkan and 32-bit titles
+apt install mesa-vulkan-drivers libglx-mesa0:i386 mesa-vulkan-drivers:i386 libgl1-mesa-dri:i386
+
+#------------------------------------------------------------
+#### Ricing
+###  Alacritty.toml customization
+##   Create this file 
+nano $HOME/.alacritty.toml
+
+# Add stuff like 
+# [font]
+# size = 6.0
+
+### Better-Control
+##  If you use i3, this is a great control panel
+curl -fsSL https://raw.githubusercontent.com/better-ecosystem/better-control/refs/heads/main/betterctl.sh -o /tmp/betterctl.sh && bash /tmp/betterctl.sh && rm /tmp/betterctl.sh
+
+## If the blue light filter gets stuck, use xrandr to reset it
+xrandr --output eDP-1 --gamma 1:1:1
+
+## Turn down brightness if your Fn keys don't work
+brightnessctl set 100%
+brightnessctl set 50%
+brightnessctl set 1%
+
+## If this doesn't work change the brightness with xrandr
+xrandr --output eDP-1 --brightness 1.0
+xrandr --output eDP-1 --brightness 0.5
+xrandr --output eDP-1 --brightness 0.1
+
+#------------------------------------------------------------
+#### Networking
+###  NetworkManager
+##   Install the package for nm-applet
+apt install network-manager-applet
+
+### FastConnect 7800 WiFi not showing
+##  Install Atheros firmware
+apt install firmware-atheros
+
+##  Reboot
+sudo reboot
+
+## iptables TTL bypass
+sudo apt install iptables
+
+# Change IPV4 time to live
+sudo iptables -t mangle -A POSTROUTING -j TTL --ttl-set 65
+
+# Change IPV6 hop limit (I just disable IPV6 instead)
+sudo ip6tables -t mangle -A POSTROUTING -j HL --hl-set 65
+
+#------------------------------------------------------------
+#### IDE's and Software Development
+###  Rust
+## Install rust
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+# Update your shell, this is usually done by running one of the following (note the leading DOT):
+# For sh/bash/zsh/ash/dash/pdksh
+. "$HOME/.cargo/env"            
+# For fish
+source "$HOME/.cargo/env.fish"  
+# For nushell
+source $"($nu.home-path)/.cargo/env.nu"  
+
+# Update rust
+rustup update
+
+# Prevent error: linker `cc` not found
+sudo apt-get update && sudo apt install build-essential
+
+# Install just for justfile integration
+cargo install just
+
+### Git
+sudo apt install git
+
+#------------------------------------------------------------
