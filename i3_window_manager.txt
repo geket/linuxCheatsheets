@@ -1,0 +1,27 @@
+#------------------------------------------------------------
+#### i3 Window Manager Cheatsheet
+###  Install
+sudo apt install i3 xorg-server xorg
+
+###  Configure as default
+nano ~/.xinitrc
+##   Enter this at the top of xinitrc so that i3 boots on initialization of x11
+exec i3
+##   Setting AccountService to use i3 as default x11 session
+mkdir /var/lib/AccountsService
+mkdir /var/lib/AccountsService/users
+
+## Create a new file with the same name as your Linux user
+nano /var/lib/AccountsService/users/yourUsername
+## Enter these three lines into this file
+[User]
+Language=
+XSession=i3
+
+###  Launch i3
+## Ctrl + Alt + F3 to open an additional tty, 
+## Ctrl + Alt + F1 to open your original desktop environment/CLI 
+## Login to your user you configured i3 for
+startx
+
+#------------------------------------------------------------
