@@ -127,3 +127,11 @@ sudo apt-get upgrade steam -f
 sudo apt install nvidia-driver-libs:i386
 
 #------------------------------------------------------------
+#### Peer to Peer (P2P)
+###  Nicotine+
+##   Install
+sudo apt update; sudo apt install python3-launchpadlib software-properties-common
+sudo add-apt-repository 'deb https://ppa.launchpadcontent.net/nicotine-team/stable/ubuntu jammy main'
+sudo apt update; sudo apt install nicotine
+
+#------------------------------------------------------------
