@@ -4,6 +4,30 @@
 sudo apt update && apt upgrade
 
 #------------------------------------------------------------
+### Drivers
+nano /etc/apt/sources.list
+## Add non-free and contrib after each mirror, for example
+# deb http://deb.debian.org/debian/ trixie main non-free-firmware non-free contrib
+# deb-src http://deb.debian.org/debian/ trixie main non-free-firmware non-free contrib
+
+# deb http://security.debian.org/debian-security trixie-security main non-free-firmware non-free contrib
+# deb-src http://security.debian.org/debian-security trixie-security main non-free-firmware non-free contrib
+
+## trixie-updates, to get updates before a point release is made;
+## see https://www.debian.org/doc/manuals/debian-reference/ch02.en.html#_updates_and_backports
+# deb http://deb.debian.org/debian/ trixie-updates main non-free-firmware non-free contrib
+# deb-src http://deb.debian.org/debian/ trixie-updates main non-free-firmware non-free contrib
+
+## VERY IMPORTANT, make sure the proper kernel headers are installed
+## It should tell you that you need to reboot
+sudo apt install linux-headers-$(uname -r) build-essential nvidia-driver
+sudo reboot
+
+## After reboot, check and see if nvidia-smi is working
+## If loads into your DE/WM and tells you about driver and firmware, you are done
+nvidia-smi
+
+#------------------------------------------------------------
 #### Chat clients
 ### Signal
 ## NOTE: These instructions only work for 64-bit Debian-based
