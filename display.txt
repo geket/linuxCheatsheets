@@ -1,0 +1,5 @@
+# Show displays available
+xrandr --listmonitors
+
+# Reset Gamma
+xrandr <monitor> --gamma 1:1:1
