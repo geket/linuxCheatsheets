@@ -103,7 +103,82 @@ docker run -d \
   -e OLLAMA_BASE_URL=http://127.0.0.1:11434 \
   ghcr.io/open-webui/open-webui:main
 
-#------------------------------------------------------------
 ### In the future, for production-style serving (higher throughput, better concurrent agents) switch later to vLLM:
 pip install vllm
 vllm serve deepseek-ai/DeepSeek-R1-Distill-Qwen-14B --port 8000 ...
+
+#------------------------------------------------------------
+### Qwen agent
+ollama pull qwen3:8b
+ollama pull qwen2.5-coder:7b
+
+## Install Aider
+curl -LsSf https://aider.chat/install.sh | sh
+
+# Ensure it was installed
+aider --version
+
+# Set the Ollama endpoint
+export OLLAMA_API_BASE=http://127.0.0.1:11434
+
+## Make it permanent (if you so choose)
+echo 'export OLLAMA_API_BASE=http://127.0.0.1:11434' >> ~/.bashrc
+source ~/.bashrc
+
+## Start aider with the model
+aider --model ollama_chat/qwen3:8b
+# Or
+aider --model ollama_chat/deepseek-r1:8b
+# Or
+aider --model ollama/qwen3:8b
+
+#------------------------------------------------------------
+### Creating the agents
+# nano ~/.aider.conf.yml and paste the below config
+# Or tee
+tee ~/.aider.conf.yml > /dev/null << 'EOF'
+model: ollama_chat/qwen3:8b
+weak-model: ollama_chat/qwen2.5-coder:7b
+
+# Make it more autonomous
+auto-commits: true
+dirty-commits: true
+auto-lint: true
+auto-test: false
+
+# Better editing behavior
+edit-format: diff
+attribute-author: true
+attribute-committer: true
+
+# Context & safety on 8 GB
+map-tokens: 1024
+max-chat-history-tokens: 2048
+EOF
+
+## Practical workflow
+# Change directories into your project. 
+# It must be a git repo
+# cd /path/to/your/project          
+git init                         # if it isn't already
+
+export OLLAMA_API_BASE=http://127.0.0.1:11434
+aider --model ollama_chat/qwen3:8b
+
+## You can now make use of these commands
+# | Command                        | What it does                                      |
+# |--------------------------------|---------------------------------------------------|
+# | `/add file.html`               | Add file(s) to the chat context                   |
+# | `/add *.html`                  | Add multiple files                                |
+# | `/drop`                        | Remove files from context                         |
+# | `/architect`                   | Architect mode – plans first, then edits (more reliable) |
+# | `/code ...`                    | Force it to write code                            |
+# | `/run pytest` or `/run npm test` | Run tests and let it fix failures               |
+# | `/undo`                        | Undo last change                                  |
+# | `/diff`                        | See what changed                                  |
+# | `/commit`                      | Force a commit                                    |
+
+## Enable architect mode to automate
+aider --architect --model ollama_chat/qwen3:8b
+
+#------------------------------------------------------------
